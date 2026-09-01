@@ -257,7 +257,7 @@ body.result-mode .disclaimer{color:#817d89}
       <h2>Where should I save your ADHD Tax result?</h2>
       <p>I calculated your pattern. Enter your email to see the free result now and keep it connected to your report if you decide to unlock the exact number.</p>
       <form class="lead-form" id="leadForm" onsubmit="saveLeadAndReveal(event)">
-        <input class="email-input" id="leadEmailInput" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required />
+        <input class="email-input" id="leadEmailInput" name="adhdTaxLeadEntry" type="email" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="you@example.com" value="" readonly onfocus="this.removeAttribute('readonly');this.value=''" required />
         <button class="btn btn-primary" id="leadButton" type="submit">Show my result →</button>
       </form>
       <div class="email-error hidden" id="leadError"></div>
@@ -267,7 +267,7 @@ body.result-mode .disclaimer{color:#817d89}
 
   <section id="result" class="hidden">
     <div class="card reveal">
-      <div class="reveal-label">Your ADHD Tax is calculated</div><div class="amount" id="annual">$•,•••</div><div class="period" id="resultPeriod">per year — your exact number is ready, but hidden</div>
+      <div class="reveal-label">We found your ADHD Tax</div><div class="amount" id="annual">LOCKED</div><div class="period" id="resultPeriod">Your exact yearly number is calculated and ready.</div>
       <div class="equiv" id="equiv"></div><div class="scrollcue">↓ The number is only half the story</div>
     </div>
 
@@ -303,7 +303,7 @@ body.result-mode .disclaimer{color:#817d89}
         <p>Your free result shows the pattern. The exact annual number is still hidden — along with exactly where it comes from and what to change first.</p>
         <div class="checkout-value">
           <div class="mini-card"><span>You already know</span><strong id="miniKnown">Your pattern</strong><p>Your dominant leak + the shape of all 5 patterns.</p></div>
-          <div class="mini-card"><span>You unlock for $7</span><strong id="checkoutAmount">$•,••• exact</strong><p>Your exact yearly number + full dollar autopsy.</p></div>
+          <div class="mini-card"><span>You unlock for $7</span><strong id="checkoutAmount">Your exact number</strong><p>Your exact yearly ADHD Tax + full dollar autopsy.</p></div>
         </div>
         <form id="checkoutForm" onsubmit="beginCheckout(event)">
           <button class="btn btn-primary" id="checkoutButton" type="submit" style="width:100%">Reveal my exact ADHD Tax — $7</button>
@@ -405,15 +405,10 @@ function calculateResultState(){
  lastResult={t,sorted,annual,profile,top,combo};
  return lastResult;
 }
-function maskedMoney(v){
- const n=Math.max(0,Math.round(Number(v)||0));
- if(n<1000) return n===0?'LOW':'$•••';
- return '$'+Math.floor(n/1000)+',•••';
-}
 function showLeadGate(){
  calculateResultState();
  $('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('result').classList.add('hidden');$('leadGate').classList.remove('hidden');
- $('leadEmailInput').value=localStorage.getItem('adhdTaxEmail')||'';
+ $('leadEmailInput').value='';$('leadEmailInput').setAttribute('readonly','');setTimeout(()=>{$('leadEmailInput').value='';},150);
  $('leadError').classList.add('hidden');$('leadButton').disabled=false;$('leadButton').textContent='Show my result →';
  window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -430,9 +425,9 @@ async function saveLeadAndReveal(e){
 function showResult(){
  const result=lastResult||calculateResultState();
  const {t,sorted,annual,profile,top,combo}=result,share=annual?Math.round(top[1]/annual*100):0;
- document.body.classList.add('result-mode');$('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('leadGate').classList.add('hidden');$('result').classList.remove('hidden');$('annual').textContent=maskedMoney(annual);$('resultPeriod').textContent='per year — your exact number is calculated, but hidden';$('equiv').innerHTML=`We found money leakage in <strong>${Object.values(t).filter(v=>v>0).length} of 5 patterns</strong>. Your biggest one is <strong>${profile.name}</strong>.`;$('patternName').textContent=profile.name;$('patternCopy').textContent=profile.copy;$('topShare').textContent=share+'%';$('ahaText').textContent=profile.aha;$('shareAmount').textContent=maskedMoney(annual)+'/year';$('shareType').textContent='Pattern: '+profile.name;$('shareCopy').textContent='I calculated my ADHD Tax. I am not emotionally prepared for the exact number.';
+ document.body.classList.add('result-mode');$('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('leadGate').classList.add('hidden');$('result').classList.remove('hidden');$('annual').textContent='LOCKED';$('resultPeriod').textContent='Your exact yearly number is calculated and ready.';$('equiv').innerHTML=`We found money leakage in <strong>${Object.values(t).filter(v=>v>0).length} of 5 patterns</strong>. Your biggest one is <strong>${profile.name}</strong>.`;$('patternName').textContent=profile.name;$('patternCopy').textContent=profile.copy;$('topShare').textContent=share+'%';$('ahaText').textContent=profile.aha;$('shareAmount').textContent='EXACT NUMBER LOCKED';$('shareType').textContent='Pattern: '+profile.name;$('shareCopy').textContent='I calculated my ADHD Tax. The exact number is between me and my nervous system.';
  const max=Math.max(...Object.values(t),1);$('meters').innerHTML='';sorted.forEach(([k,v])=>{const row=document.createElement('div');row.className='meter-row';row.innerHTML=`<div class="meter-name">${labels[k]}</div><div class="meter"><div style="width:${Math.max(6,Math.round(v/max*100))}%"></div></div><div class="meter-value">${annual?Math.round(v/annual*100):0}%</div>`;$('meters').appendChild(row)});
- $('checkoutAmount').textContent=maskedMoney(annual)+' exact';
+ $('checkoutAmount').textContent='Your exact number';
  $('miniKnown').textContent=profile.name;
  $('reportAmount').textContent=money(annual);
  $('reportIntro').textContent=`Here’s the private breakdown behind your ${money(annual)}/year estimate.`;
@@ -797,6 +792,11 @@ async function verifyStripeSession(sessionId){
 
    isPaid=true;
    syncPaidState();
+   if(lastResult){
+     $('annual').textContent=money(lastResult.annual);
+     $('resultPeriod').textContent='per year — your exact ADHD Tax';
+     $('shareAmount').textContent=money(lastResult.annual)+'/year';
+   }
    setPaymentStatus('success','Payment verified. Your report is unlocked and has been sent to your email.','Stripe confirmed the $7 payment. Your personalized report is being sent to your email…','✓');
 
    const delivery=await sendPaidReport(sessionId);
@@ -846,7 +846,7 @@ async function resumeAfterStripe(){
 
 window.addEventListener('DOMContentLoaded',resumeAfterStripe);
 
-function shareResult(){if(!lastResult)return;const amount=isPaid?money(lastResult.annual):maskedMoney(lastResult.annual);const text=`I took the ADHD Tax test. My ADHD Tax is ${amount}/year. Pattern: ${lastResult.profile.name}. Apparently my brain has a subscription fee.`;navigator.clipboard.writeText(text).then(()=>alert('Share text copied.'));}
+function shareResult(){if(!lastResult)return;const text=isPaid?`I took the ADHD Tax test. My ADHD Tax is ${money(lastResult.annual)}/year. Pattern: ${lastResult.profile.name}. Apparently my brain has a subscription fee.`:`I took the ADHD Tax test. My exact number is locked. Pattern: ${lastResult.profile.name}. Apparently my brain has a subscription fee.`;navigator.clipboard.writeText(text).then(()=>alert('Share text copied.'));}
 function restart(){step=0;responses=Array(questions.length).fill(null);lastResult=null;isPaid=false;document.body.classList.remove('result-mode');$('result').classList.add('hidden');$('leadGate').classList.add('hidden');$('hero').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d368bf4108e844939acd9d60a22d50ff"}'></script><!-- End Cloudflare Web Analytics -->
