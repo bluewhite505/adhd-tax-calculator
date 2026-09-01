@@ -824,5 +824,6 @@ window.addEventListener('DOMContentLoaded',resumeAfterStripe);
 function shareResult(){if(!lastResult)return;const text=`I took the ADHD Tax test. Estimated tax: ${money(lastResult.annual)}/year. Pattern: ${lastResult.profile.name}. Apparently my brain has a subscription fee.`;navigator.clipboard.writeText(text).then(()=>alert('Share text copied.'));}
 function restart(){step=0;responses=Array(questions.length).fill(null);lastResult=null;isPaid=false;document.body.classList.remove('result-mode');$('result').classList.add('hidden');$('hero').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 </script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d368bf4108e844939acd9d60a22d50ff"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
