@@ -386,7 +386,40 @@ const meta={
 const labels={forgetter:'Forgetting',dopamine:'Fast dopamine',avoider:'Avoidance',emergency:'Urgency',starter:'Abandoned starts'};
 let step=0,responses=Array(questions.length).fill(null),pendingInterstitial=false,lastResult=null,isPaid=false;
 function $(id){return document.getElementById(id)}
-function startQuiz(){ $('hero').classList.add('hidden');$('quiz').classList.remove('hidden');render();window.scrollTo({top:0,behavior:'smooth'}); }
+
+// Funnel tracking → Make.com. Fire-and-forget; never blocks the quiz or checkout.
+const FUNNEL_WEBHOOK='https://hook.eu1.make.com/6hu51arhoui41nu9zj1grvdkovhn3g92';
+function getFunnelSessionId(){
+  let id=localStorage.getItem('adhdTaxFunnelSession');
+  if(!id){
+    id='ft_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);
+    localStorage.setItem('adhdTaxFunnelSession',id);
+  }
+  return id;
+}
+function trackFunnel(eventName, extra={}){
+  try{
+    const dedupeKey='adhdTaxTracked_'+getFunnelSessionId()+'_'+eventName;
+    if(sessionStorage.getItem(dedupeKey)) return;
+    sessionStorage.setItem(dedupeKey,'1');
+    const savedEmail=(localStorage.getItem('adhdTaxEmail')||'').trim();
+    const params=new URLSearchParams({
+      timestamp:new Date().toISOString(),
+      session_id:getFunnelSessionId(),
+      event:eventName,
+      email:extra.email||savedEmail||'',
+      annual:String(extra.annual ?? lastResult?.annual ?? ''),
+      pattern:String(extra.pattern ?? lastResult?.profile?.name ?? ''),
+      source:new URLSearchParams(location.search).get('src')||'direct',
+      page:location.pathname,
+      referrer:document.referrer||'',
+      ...Object.fromEntries(Object.entries(extra).map(([k,v])=>[k,String(v??'')]))
+    });
+    fetch(FUNNEL_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:params.toString(),keepalive:true}).catch(()=>{});
+  }catch(_){}
+}
+trackFunnel('visit');
+function startQuiz(){ trackFunnel('quiz_started');$('hero').classList.add('hidden');$('quiz').classList.remove('hidden');render();window.scrollTo({top:0,behavior:'smooth'}); }
 function render(){
  $('reflection').classList.add('hidden');$('questionCard').classList.remove('hidden');
  const q=questions[step];$('kicker').textContent=q.k;$('question').textContent=q.q;$('answers').innerHTML='';
@@ -407,6 +440,7 @@ function calculateResultState(){
 }
 function showLeadGate(){
  calculateResultState();
+ trackFunnel('quiz_completed',{annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||''});
  $('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('result').classList.add('hidden');$('leadGate').classList.remove('hidden');
  $('leadEmailInput').value='';$('leadEmailInput').setAttribute('readonly','');setTimeout(()=>{$('leadEmailInput').value='';},150);
  $('leadError').classList.add('hidden');$('leadButton').disabled=false;$('leadButton').textContent='Show my result →';
@@ -418,12 +452,13 @@ async function saveLeadAndReveal(e){
  err.classList.add('hidden');
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Enter a valid email address.';err.classList.remove('hidden');return;}
  btn.disabled=true;btn.textContent='Saving…';
- try{await saveLead(email);}catch(ex){btn.disabled=false;btn.textContent='Show my result →';err.textContent='We could not save your email yet. Please try again.';err.classList.remove('hidden');return;}
+ try{await saveLead(email);trackFunnel('email_saved',{email,annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||''});}catch(ex){btn.disabled=false;btn.textContent='Show my result →';err.textContent='We could not save your email yet. Please try again.';err.classList.remove('hidden');return;}
  $('leadGate').classList.add('hidden');
  showResult();
 }
 function showResult(){
  const result=lastResult||calculateResultState();
+ trackFunnel('paywall_seen',{annual:result.annual||'',pattern:result.profile?.name||''});
  const {t,sorted,annual,profile,top,combo}=result,share=annual?Math.round(top[1]/annual*100):0;
  document.body.classList.add('result-mode');$('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('leadGate').classList.add('hidden');$('result').classList.remove('hidden');$('annual').textContent='LOCKED';$('resultPeriod').textContent='Your exact yearly number is calculated and ready.';$('equiv').innerHTML=`We found money leakage in <strong>${Object.values(t).filter(v=>v>0).length} of 5 patterns</strong>. Your biggest one is <strong>${profile.name}</strong>.`;$('patternName').textContent=profile.name;$('patternCopy').textContent=profile.copy;$('topShare').textContent=share+'%';$('ahaText').textContent=profile.aha;$('shareAmount').textContent='EXACT NUMBER LOCKED';$('shareType').textContent='Pattern: '+profile.name;$('shareCopy').textContent='I calculated my ADHD Tax. The exact number is between me and my nervous system.';
  const max=Math.max(...Object.values(t),1);$('meters').innerHTML='';sorted.forEach(([k,v])=>{const row=document.createElement('div');row.className='meter-row';row.innerHTML=`<div class="meter-name">${labels[k]}</div><div class="meter"><div style="width:${Math.max(6,Math.round(v/max*100))}%"></div></div><div class="meter-value">${annual?Math.round(v/annual*100):0}%</div>`;$('meters').appendChild(row)});
@@ -473,6 +508,7 @@ async function beginCheckout(e){
    err.textContent='Your saved email is missing. Retake the quiz so we can save your result before checkout.';err.classList.remove('hidden');return;
  }
  const checkoutBtn=$('checkoutButton');
+ trackFunnel('checkout_clicked',{email,annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||''});
  checkoutBtn.disabled=true;checkoutBtn.textContent='Opening secure checkout…';
  localStorage.setItem('adhdTaxResponses', JSON.stringify(responses));
  localStorage.setItem('adhdTaxResult', JSON.stringify({annual:lastResult?.annual||0,pattern:lastResult?.profile?.name||''}));
@@ -791,6 +827,7 @@ async function verifyStripeSession(sessionId){
    }
 
    isPaid=true;
+   trackFunnel('paid',{email:paidEmail||saved,annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||'',stripe_session_id:sessionId});
    syncPaidState();
    if(lastResult){
      $('annual').textContent=money(lastResult.annual);
