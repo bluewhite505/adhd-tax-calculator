@@ -227,6 +227,13 @@ body.result-mode .disclaimer{color:#817d89}
 
 
 
+
+/* Conversion-focused paywall */
+body.result-mode .checkout-card{border:2px solid #bfe9d0;box-shadow:0 22px 54px rgba(31,155,117,.14)}
+body.result-mode .checkout-card h3{font-size:32px;line-height:1.08;letter-spacing:-.04em}
+body.result-mode .checkout-card>p{font-size:16px}
+@media(max-width:640px){body.result-mode .checkout-card h3{font-size:27px}}
+
 </style>
 </head>
 <body>
@@ -253,11 +260,11 @@ body.result-mode .disclaimer{color:#817d89}
   <section id="leadGate" class="hidden">
     <div class="card lead-gate">
       <div class="lead-icon">🧾</div>
-      <div class="kicker">Your result is ready</div>
-      <h2>Where should I save your ADHD Tax result?</h2>
-      <p>I calculated your pattern. Enter your email to see the free result now and keep it connected to your report if you decide to unlock the exact number.</p>
+      <div class="kicker">Your result is calculated</div>
+      <h2>Your ADHD Tax number is ready.</h2>
+      <p>Enter your email to save this result and see the pattern behind it. Your exact annual number stays locked until you choose to reveal it.</p>
       <form class="lead-form" id="leadForm" onsubmit="saveLeadAndReveal(event)">
-        <input class="email-input" id="leadEmailInput" name="adhdTaxLeadEntry" type="email" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="you@example.com" value="" readonly onfocus="this.removeAttribute('readonly');this.value=''" required />
+        <input class="email-input" id="leadEmailInput" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required />
         <button class="btn btn-primary" id="leadButton" type="submit">Show my result →</button>
       </form>
       <div class="email-error hidden" id="leadError"></div>
@@ -267,28 +274,27 @@ body.result-mode .disclaimer{color:#817d89}
 
   <section id="result" class="hidden">
     <div class="card reveal">
-      <div class="reveal-label">We found your ADHD Tax</div><div class="amount" id="annual">LOCKED</div><div class="period" id="resultPeriod">Your exact yearly number is calculated and ready.</div>
-      <div class="equiv" id="equiv"></div><div class="scrollcue">↓ The number is only half the story</div>
+      <div class="reveal-label">Your ADHD Tax is ready</div><div class="amount" id="annual">LOCKED</div><div class="period" id="resultPeriod">your exact annual number is calculated</div>
+      <div class="equiv" id="equiv"></div><div class="scrollcue">↓ You answered the questions. Now see what they add up to.</div>
     </div>
 
     <div class="card result-card">
-      <div class="pattern-head">
-        <div class="pattern-box"><div class="pattern-label">Your dominant money pattern</div><div class="pattern-name" id="patternName"></div><div class="pattern-copy" id="patternCopy"></div></div>
-        <div class="stat-box"><strong id="topShare">0%</strong><span>of your estimate comes from your biggest pattern</span></div>
+      <div class="aha" style="margin-top:0">
+        <div class="aha-title">We found something</div>
+        <p>Your answers form a real money-loss pattern. The exact pattern, what it costs you, and where it shows up most are part of your locked result.</p>
       </div>
-      <div class="aha"><div class="aha-title">The part most people miss</div><p id="ahaText"></p></div>
-
 
       <div class="teaser">
-        <div class="teaser-top"><div class="pattern-label">Your 5-pattern map</div><p style="font-size:14px;margin-top:6px">You can see the shape of your money leaks. Your exact yearly number, dollar breakdown, trigger, and fixes unlock after checkout.</p></div>
-        <div id="meters"></div>
-        <div class="fade-lock">
-          <div class="blurzone">
-            <div class="fake-row"><span>Exact cost of your #1 pattern</span><span>$1,864</span></div>
-            <div class="fake-row"><span>Your most expensive trigger</span><span>Last-minute urgency</span></div>
-            <div class="fake-row"><span>Fastest leak to stop this week</span><span>$64/mo</span></div>
-            <div class="fake-row"><span>Your 3 friction switches</span><span>Ready</span></div>
-          </div>
+        <div class="teaser-top">
+          <div class="pattern-label">Your result is complete</div>
+          <p style="font-size:14px;margin-top:6px">You already did the work. We calculated the result from all 8 answers. Nothing else to fill out.</p>
+        </div>
+        <div class="blurzone" style="filter:none;opacity:1;max-height:none;mask-image:none;-webkit-mask-image:none;padding-top:4px">
+          <div class="fake-row"><span>Your exact annual ADHD Tax</span><span>LOCKED</span></div>
+          <div class="fake-row"><span>Your dominant money pattern</span><span>LOCKED</span></div>
+          <div class="fake-row"><span>Your most expensive trigger</span><span>LOCKED</span></div>
+          <div class="fake-row"><span>Your 5-pattern dollar breakdown</span><span>LOCKED</span></div>
+          <div class="fake-row"><span>Your easiest leak to reduce first</span><span>LOCKED</span></div>
         </div>
       </div>
 
@@ -298,20 +304,20 @@ body.result-mode .disclaimer{color:#817d89}
       </div>
 
       <div class="checkout-card" id="checkoutCard"><div style="height:6px;border-radius:999px;background:linear-gradient(90deg,#157f62,#1f9b75,#54c7a1);margin:-8px 0 22px"></div>
-        <div class="checkout-eyebrow">Your exact number is ready</div>
-        <h3>Want to see what your ADHD Tax actually is?</h3>
-        <p>Your free result shows the pattern. The exact annual number is still hidden — along with exactly where it comes from and what to change first.</p>
+        <div class="checkout-eyebrow">Your private result is ready</div>
+        <h3>You answered 8 questions. We found the pattern. Now unlock the result.</h3>
+        <p>Your exact annual ADHD Tax, dominant pattern, biggest trigger, and full dollar breakdown are already calculated from your answers. Unlock them together for $7.</p>
         <div class="checkout-value">
-          <div class="mini-card"><span>You already know</span><strong id="miniKnown">Your pattern</strong><p>Your dominant leak + the shape of all 5 patterns.</p></div>
-          <div class="mini-card"><span>You unlock for $7</span><strong id="checkoutAmount">Your exact number</strong><p>Your exact yearly ADHD Tax + full dollar autopsy.</p></div>
+          <div class="mini-card"><span>Calculated from</span><strong id="miniKnown">8 answers</strong><p>Your personalized result is complete.</p></div>
+          <div class="mini-card"><span>Unlock</span><strong id="checkoutAmount">YOUR RESULT</strong><p>Exact number + pattern + trigger + full breakdown.</p></div>
         </div>
         <form id="checkoutForm" onsubmit="beginCheckout(event)">
-          <button class="btn btn-primary" id="checkoutButton" type="submit" style="width:100%">Reveal my exact ADHD Tax — $7</button>
+          <button class="btn btn-primary" id="checkoutButton" type="submit" style="width:100%">Unlock my ADHD Tax result — $7</button>
         </form>
         <div class="email-error hidden" id="emailError"></div>
-        <div class="checkout-list"><div>Your exact yearly ADHD Tax</div><div>Your exact $ breakdown across all 5 patterns</div><div>Your single most expensive money trigger</div><div>3 low-friction fixes + your 30-day recovery plan</div></div>
-        <div class="inline-price"><strong>$7</strong><span>one-time · no subscription</span></div>
-        <p class="microcopy">Your email and free result are already saved. Payment unlocks the exact number and full report immediately.</p>
+        <div class="checkout-list"><div>The exact annual number your answers produced</div><div>Exactly how many dollars come from each of your 5 patterns</div><div>The single trigger costing you the most</div><div>The easiest leak to attack first + a 30-day recovery plan</div></div>
+        <div class="inline-price"><strong>$7</strong><span>once · no subscription</span></div>
+        <p class="microcopy">One payment. No subscription. Your complete result unlocks immediately after checkout.</p>
       </div>
 
       <div class="report hidden" id="fullReport">
@@ -323,6 +329,16 @@ body.result-mode .disclaimer{color:#817d89}
           </div>
           <div class="inline-price" style="margin-top:0"><strong id="reportAmount">$0</strong><span>estimated annual total</span></div>
         </div>
+        <div class="pattern-head" style="margin-top:18px">
+          <div class="pattern-box"><div class="pattern-label">Your dominant money pattern</div><div class="pattern-name" id="patternName"></div><div class="pattern-copy" id="patternCopy"></div></div>
+          <div class="stat-box"><strong id="topShare">0%</strong><span>of your estimate comes from your biggest pattern</span></div>
+        </div>
+        <div class="aha"><div class="aha-title">The part most people miss</div><p id="ahaText"></p></div>
+        <div class="teaser">
+          <div class="teaser-top"><div class="pattern-label">Your 5-pattern map</div><p style="font-size:14px;margin-top:6px">Here is the shape of your ADHD Tax across all five patterns.</p></div>
+          <div id="meters"></div>
+        </div>
+
         <div class="breakdown" id="breakdown"></div>
         <div class="insight-grid">
           <div class="insight-card"><div class="label">Biggest trigger</div><strong id="triggerTitle">—</strong><p id="triggerCopy"></p></div>
@@ -356,7 +372,7 @@ body.result-mode .disclaimer{color:#817d89}
         <div class="report-actions"><button class="btn btn-ghost" onclick="shareResult()">Copy share text</button><button class="btn btn-ghost" onclick="restart()">Retake</button></div>
       </div>
 
-      <div class="share"><small>MY ADHD TAX</small><div class="share-amount" id="shareAmount"></div><div class="share-type" id="shareType"></div><p id="shareCopy">Apparently my brain has a subscription fee.</p></div>
+      <div class="share hidden" id="shareCard"><small>MY ADHD TAX</small><div class="share-amount" id="shareAmount"></div><div class="share-type" id="shareType"></div><p id="shareCopy">Apparently my brain has a subscription fee.</p></div>
       <div class="bottom-actions"><button class="btn btn-ghost" onclick="restart()">Retake</button></div>
       <div class="disclaimer">For self-reflection and budgeting awareness only. This does not diagnose ADHD or establish that ADHD caused any expense. Estimates are calculated only from the ranges you select.</div>
     </div>
@@ -386,40 +402,7 @@ const meta={
 const labels={forgetter:'Forgetting',dopamine:'Fast dopamine',avoider:'Avoidance',emergency:'Urgency',starter:'Abandoned starts'};
 let step=0,responses=Array(questions.length).fill(null),pendingInterstitial=false,lastResult=null,isPaid=false;
 function $(id){return document.getElementById(id)}
-
-// Funnel tracking → Make.com. Fire-and-forget; never blocks the quiz or checkout.
-const FUNNEL_WEBHOOK='https://hook.eu1.make.com/6hu51arhoui41nu9zj1grvdkovhn3g92';
-function getFunnelSessionId(){
-  let id=localStorage.getItem('adhdTaxFunnelSession');
-  if(!id){
-    id='ft_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);
-    localStorage.setItem('adhdTaxFunnelSession',id);
-  }
-  return id;
-}
-function trackFunnel(eventName, extra={}){
-  try{
-    const dedupeKey='adhdTaxTracked_'+getFunnelSessionId()+'_'+eventName;
-    if(sessionStorage.getItem(dedupeKey)) return;
-    sessionStorage.setItem(dedupeKey,'1');
-    const savedEmail=(localStorage.getItem('adhdTaxEmail')||'').trim();
-    const params=new URLSearchParams({
-      timestamp:new Date().toISOString(),
-      session_id:getFunnelSessionId(),
-      event:eventName,
-      email:extra.email||savedEmail||'',
-      annual:String(extra.annual ?? lastResult?.annual ?? ''),
-      pattern:String(extra.pattern ?? lastResult?.profile?.name ?? ''),
-      source:new URLSearchParams(location.search).get('src')||'direct',
-      page:location.pathname,
-      referrer:document.referrer||'',
-      ...Object.fromEntries(Object.entries(extra).map(([k,v])=>[k,String(v??'')]))
-    });
-    fetch(FUNNEL_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:params.toString(),keepalive:true}).catch(()=>{});
-  }catch(_){}
-}
-trackFunnel('visit');
-function startQuiz(){ trackFunnel('quiz_started');$('hero').classList.add('hidden');$('quiz').classList.remove('hidden');render();window.scrollTo({top:0,behavior:'smooth'}); }
+function startQuiz(){ $('hero').classList.add('hidden');$('quiz').classList.remove('hidden');render();window.scrollTo({top:0,behavior:'smooth'}); }
 function render(){
  $('reflection').classList.add('hidden');$('questionCard').classList.remove('hidden');
  const q=questions[step];$('kicker').textContent=q.k;$('question').textContent=q.q;$('answers').innerHTML='';
@@ -438,11 +421,15 @@ function calculateResultState(){
  lastResult={t,sorted,annual,profile,top,combo};
  return lastResult;
 }
+function maskedMoney(v){
+ const n=Math.max(0,Math.round(Number(v)||0));
+ if(n===0) return 'LOW';
+ return 'LOCKED';
+}
 function showLeadGate(){
  calculateResultState();
- trackFunnel('quiz_completed',{annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||''});
  $('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('result').classList.add('hidden');$('leadGate').classList.remove('hidden');
- $('leadEmailInput').value='';$('leadEmailInput').setAttribute('readonly','');setTimeout(()=>{$('leadEmailInput').value='';},150);
+ $('leadEmailInput').value=localStorage.getItem('adhdTaxEmail')||'';
  $('leadError').classList.add('hidden');$('leadButton').disabled=false;$('leadButton').textContent='Show my result →';
  window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -452,21 +439,20 @@ async function saveLeadAndReveal(e){
  err.classList.add('hidden');
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Enter a valid email address.';err.classList.remove('hidden');return;}
  btn.disabled=true;btn.textContent='Saving…';
- try{await saveLead(email);trackFunnel('email_saved',{email,annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||''});}catch(ex){btn.disabled=false;btn.textContent='Show my result →';err.textContent='We could not save your email yet. Please try again.';err.classList.remove('hidden');return;}
+ try{await saveLead(email);}catch(ex){btn.disabled=false;btn.textContent='Show my result →';err.textContent='We could not save your email yet. Please try again.';err.classList.remove('hidden');return;}
  $('leadGate').classList.add('hidden');
  showResult();
 }
 function showResult(){
  const result=lastResult||calculateResultState();
- trackFunnel('paywall_seen',{annual:result.annual||'',pattern:result.profile?.name||''});
  const {t,sorted,annual,profile,top,combo}=result,share=annual?Math.round(top[1]/annual*100):0;
- document.body.classList.add('result-mode');$('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('leadGate').classList.add('hidden');$('result').classList.remove('hidden');$('annual').textContent='LOCKED';$('resultPeriod').textContent='Your exact yearly number is calculated and ready.';$('equiv').innerHTML=`We found money leakage in <strong>${Object.values(t).filter(v=>v>0).length} of 5 patterns</strong>. Your biggest one is <strong>${profile.name}</strong>.`;$('patternName').textContent=profile.name;$('patternCopy').textContent=profile.copy;$('topShare').textContent=share+'%';$('ahaText').textContent=profile.aha;$('shareAmount').textContent='EXACT NUMBER LOCKED';$('shareType').textContent='Pattern: '+profile.name;$('shareCopy').textContent='I calculated my ADHD Tax. The exact number is between me and my nervous system.';
- const max=Math.max(...Object.values(t),1);$('meters').innerHTML='';sorted.forEach(([k,v])=>{const row=document.createElement('div');row.className='meter-row';row.innerHTML=`<div class="meter-name">${labels[k]}</div><div class="meter"><div style="width:${Math.max(6,Math.round(v/max*100))}%"></div></div><div class="meter-value">${annual?Math.round(v/annual*100):0}%</div>`;$('meters').appendChild(row)});
- $('checkoutAmount').textContent='Your exact number';
- $('miniKnown').textContent=profile.name;
+ document.body.classList.add('result-mode');$('hero').classList.add('hidden');$('quiz').classList.add('hidden');$('leadGate').classList.add('hidden');$('result').classList.remove('hidden');$('annual').textContent='LOCKED';$('resultPeriod').textContent='your exact annual number is calculated';$('equiv').innerHTML=`Your <strong>8 answers</strong> produced a personalized result. The number, pattern, trigger, and breakdown unlock together.`;$('patternName').textContent=profile.name;$('patternCopy').textContent=profile.copy;$('topShare').textContent=(annual?Math.round(top[1]/annual*100):0)+'%';$('ahaText').textContent=profile.aha;$('shareAmount').textContent=money(annual)+'/year';$('shareType').textContent='Pattern: '+profile.name;$('shareCopy').textContent='I calculated my ADHD Tax. I am not emotionally prepared for the exact number.';
+ const max=Math.max(...Object.values(t),1);$('meters').innerHTML='';sorted.forEach(([k,v])=>{const row=document.createElement('div');row.className='meter-row';row.innerHTML=`<div class="meter-name">${labels[k]}</div><div class="meter"><div style="width:${Math.max(6,Math.round(v/max*100))}%"></div></div><div class="meter-value">LOCKED</div>`;$('meters').appendChild(row)});
+ $('checkoutAmount').textContent='YOUR RESULT';
+ $('miniKnown').textContent='8 answers';
  $('reportAmount').textContent=money(annual);
  $('reportIntro').textContent=`Here’s the private breakdown behind your ${money(annual)}/year estimate.`;
- $('emailError').classList.add('hidden');$('checkoutButton').disabled=false;$('checkoutButton').textContent='Reveal my exact ADHD Tax — $7';
+ $('emailError').classList.add('hidden');$('checkoutButton').disabled=false;$('checkoutButton').textContent='Unlock my ADHD Tax result — $7';
  renderFullReport();
  isPaid = false;
  syncPaidState();
@@ -498,6 +484,7 @@ async function saveLead(email){
 function syncPaidState(){
  $('fullReport').classList.toggle('hidden',!isPaid);
  $('checkoutCard').classList.toggle('hidden',isPaid);
+ $('shareCard').classList.toggle('hidden',!isPaid);
 }
 async function beginCheckout(e){
  e.preventDefault();
@@ -508,12 +495,11 @@ async function beginCheckout(e){
    err.textContent='Your saved email is missing. Retake the quiz so we can save your result before checkout.';err.classList.remove('hidden');return;
  }
  const checkoutBtn=$('checkoutButton');
- trackFunnel('checkout_clicked',{email,annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||''});
  checkoutBtn.disabled=true;checkoutBtn.textContent='Opening secure checkout…';
  localStorage.setItem('adhdTaxResponses', JSON.stringify(responses));
  localStorage.setItem('adhdTaxResult', JSON.stringify({annual:lastResult?.annual||0,pattern:lastResult?.profile?.name||''}));
  const stripeUrl='https://buy.stripe.com/00w6oGcJO8mdgKYeP1dwc00';
- if(stripeUrl.includes('YOUR_PAYMENT_LINK')){err.textContent='Stripe is not connected yet. Add your real Payment Link before going live.';err.classList.remove('hidden');checkoutBtn.disabled=false;checkoutBtn.textContent='Reveal my exact ADHD Tax — $7';return;}
+ if(stripeUrl.includes('YOUR_PAYMENT_LINK')){err.textContent='Stripe is not connected yet. Add your real Payment Link before going live.';err.classList.remove('hidden');checkoutBtn.disabled=false;checkoutBtn.textContent='Unlock my ADHD Tax result — $7';return;}
  const url = new URL(stripeUrl, window.location.href);
  url.searchParams.set('prefilled_email', email);
  url.searchParams.set('client_reference_id', 'adhdtax-'+Date.now());
@@ -827,13 +813,7 @@ async function verifyStripeSession(sessionId){
    }
 
    isPaid=true;
-   trackFunnel('paid',{email:paidEmail||saved,annual:lastResult?.annual||'',pattern:lastResult?.profile?.name||'',stripe_session_id:sessionId});
    syncPaidState();
-   if(lastResult){
-     $('annual').textContent=money(lastResult.annual);
-     $('resultPeriod').textContent='per year — your exact ADHD Tax';
-     $('shareAmount').textContent=money(lastResult.annual)+'/year';
-   }
    setPaymentStatus('success','Payment verified. Your report is unlocked and has been sent to your email.','Stripe confirmed the $7 payment. Your personalized report is being sent to your email…','✓');
 
    const delivery=await sendPaidReport(sessionId);
@@ -883,7 +863,7 @@ async function resumeAfterStripe(){
 
 window.addEventListener('DOMContentLoaded',resumeAfterStripe);
 
-function shareResult(){if(!lastResult)return;const text=isPaid?`I took the ADHD Tax test. My ADHD Tax is ${money(lastResult.annual)}/year. Pattern: ${lastResult.profile.name}. Apparently my brain has a subscription fee.`:`I took the ADHD Tax test. My exact number is locked. Pattern: ${lastResult.profile.name}. Apparently my brain has a subscription fee.`;navigator.clipboard.writeText(text).then(()=>alert('Share text copied.'));}
+function shareResult(){if(!lastResult)return;const amount=isPaid?money(lastResult.annual):maskedMoney(lastResult.annual);const text=`I took the ADHD Tax test. My ADHD Tax is ${amount}/year. Pattern: ${lastResult.profile.name}. Apparently my brain has a subscription fee.`;navigator.clipboard.writeText(text).then(()=>alert('Share text copied.'));}
 function restart(){step=0;responses=Array(questions.length).fill(null);lastResult=null;isPaid=false;document.body.classList.remove('result-mode');$('result').classList.add('hidden');$('leadGate').classList.add('hidden');$('hero').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d368bf4108e844939acd9d60a22d50ff"}'></script><!-- End Cloudflare Web Analytics -->
